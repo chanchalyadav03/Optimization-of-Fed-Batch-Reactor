@@ -47,3 +47,62 @@ with:
 
 ## 📂 Repository Structure
 
+---
+
+## 🚀 Features
+
+- Simulation of fed-batch reactor dynamics (`ode45`).
+- Parameter sweeps over feed rates.
+- Optimal control of feed rate profile using **fmincon**.
+- Process constraints (e.g., biomass concentration `X ≤ 3`).
+- Visualization of:
+  - Biomass, substrate, product, volume vs time.
+  - Final product vs feed rate.
+  - Optimized feed profile.
+
+---
+
+## 📊 Example Outputs
+
+### Final Product vs Flow Rate
+(Generated from parameter sweep)
+
+![Product vs Feed Rate](plots/final_product_vs_feed.png)
+
+### Optimized Feed Strategy
+(Generated from optimal control with `fmincon`)
+
+![Optimized Feed](plots/optimized_feed_profile.png)
+
+---
+
+## 🛠️ Requirements
+
+- MATLAB R2022a or newer
+- Optimization Toolbox (for `fmincon`)
+
+---
+
+## 📖 Skills Demonstrated
+
+- **Process Modeling:** Bioprocess mass balances with inhibition kinetics.
+- **Numerical Methods:** Solving ODEs with MATLAB (`ode45`).
+- **Optimization:** Nonlinear programming (`fmincon`) with constraints.
+- **Data Visualization:** Plotting reactor profiles and optimization results.
+- **Chemical Engineering Applications:** Reactor design and bioprocess optimization.
+
+---
+
+## ✍️ Author
+
+**Chanchal Yadav**  
+B.Tech Chemical Engineering  
+*(Prepared as part of academic + placement portfolio)*
+
+---
+
+## 📌 Note
+
+This repository is intended for learning and demonstration purposes.  
+The models and parameters are simplified representations and not from industrial datasets.
+
