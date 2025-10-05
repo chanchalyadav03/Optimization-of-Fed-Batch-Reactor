@@ -1,108 +1,146 @@
-# Fed-Batch Bioreactor Simulation and Optimization
+# Optimization of a Fed-Batch Bioreactor with Biomass Constraint
 
-This repository contains MATLAB codes for simulating and optimizing a **fed-batch bioreactor** system.  
-The work is based on classical bioprocess modeling using **Monod kinetics with substrate inhibition**, and includes both **dynamic simulation** and **optimal control** of the feed strategy.
+## Introduction
 
----
+This project focuses on the **optimization of a fed-batch bioreactor**, where the substrate feed rate is controlled to maximize the final product concentration while maintaining biomass constraints.
 
-## 📌 Project Overview
+A **fed-batch bioreactor** allows substrates to be added continuously over time without removing the culture medium. This method provides precise control over microbial growth and product formation and is widely used in pharmaceutical, biofuel, and fermentation industries.
 
-- **System modeled:** Fed-batch bioreactor with biomass (X), substrate (S), product (P), and reactor volume (V).
-- **Kinetics:** Monod model with substrate inhibition term.
-- **Objective:** Maximize final product formation by optimizing the feed rate profile `u(t)`.
-- **Approach:**
-  - Set up coupled ODEs describing mass balances.
-  - Simulate process behavior with `ode45`.
-  - Use `fmincon` to optimize time-varying feed strategy under process constraints.
+The system is modeled using coupled nonlinear ODEs that describe **biomass growth**, **substrate consumption**, **product formation**, and **volume variation**. Optimization is performed using both **iterative** and **fmincon (nonlinear constrained)** approaches in MATLAB.
 
 ---
 
-## 🧮 Model Equations
+## Project Members
 
-The system of equations solved is:
+- Chanchal Yadav   
+- Pradeep Kumar Meena 
 
-\[
-\frac{dX}{dt} = \mu(S)X - \frac{u}{V}X
-\]
-
-\[
-\frac{dS}{dt} = -\frac{1}{Y_x}\mu(S)X - \frac{\nu}{Y_p}X + \frac{u}{V}(S_{in} - S)
-\]
-
-\[
-\frac{dP}{dt} = \nu X - \frac{u}{V}P
-\]
-
-\[
-\frac{dV}{dt} = u
-\]
-
-with:
-
-\[
-\mu(S) = \frac{\mu_m S}{K_m + S + S^2/K_i}
-\]
+**Supervisor:** Prof. Nitin Padhiyar  
+Department of Chemical Engineering, IIT Gandhinagar
 
 ---
 
-## 📂 Repository Structure
+## Project Objectives
+
+The main objective is to **maximize the final product concentration (P(tf))** by optimizing the substrate feed rate `u(t)` under the constraint \( X(t) ≤ X_max
+) to prevent oxygen depletion and ensure stable bioprocess operation.
+
+### Specific Goals
+- Model the fed-batch bioreactor dynamics
+- Compare iterative and `fmincon` optimization methods
+- Apply biomass concentration constraint \(X(t) ≤ X_max
+)
+- Implement **hourly feed optimization**
+- Combine **initial condition and feed optimization** for improved performance
 
 ---
 
-## 🚀 Features
+## Model Overview
 
-- Simulation of fed-batch reactor dynamics (`ode45`).
-- Parameter sweeps over feed rates.
-- Optimal control of feed rate profile using **fmincon**.
-- Process constraints (e.g., biomass concentration `X ≤ 3`).
-- Visualization of:
-  - Biomass, substrate, product, volume vs time.
-  - Final product vs feed rate.
-  - Optimized feed profile.
+| Variable | Description |
+|:--|:--|
+| S | Substrate concentration (g/L) |
+| X | Biomass concentration (g/L) |
+| P | Product concentration (g/L) |
+| V | Volume of culture (L) |
+| u | Feed rate (L/h) |
 
----
-
-## 📊 Example Outputs
-
-### Final Product vs Flow Rate
-(Generated from parameter sweep)
-
-![Product vs Feed Rate](plots/final_product_vs_feed.png)
-
-### Optimized Feed Strategy
-(Generated from optimal control with `fmincon`)
-
-![Optimized Feed](plots/optimized_feed_profile.png)
+| Parameter | Meaning | Value |
+|:--|:--|:--|
+| μm | Maximum specific growth rate | 0.53 h⁻¹ |
+| Km | Monod constant | 1.2 g/L |
+| Ki | Inhibition constant | 22 g/L |
+| Yx | Biomass yield | 0.4 |
+| Yp | Product yield | 1 |
+| ν | Product formation rate | 0.5 h⁻¹ |
+| Sin | Inlet substrate concentration | 20 g/L |
+| Xmax | Maximum biomass concentration | 3 g/L |
+| umin–umax | Feed bounds | 0–1 L/h |
 
 ---
 
-## 🛠️ Requirements
+## Files in Repository
 
-- MATLAB R2022a or newer
-- Optimization Toolbox (for `fmincon`)
+| File Name | Description |
+|:--|:--|
+| `CL399_Poster_22110055.pdf` | Poster presentation summarizing project results |
+| `CL399_Project_Presentation_Final.pdf` | Final project PowerPoint presentation |
+| `IterativeOptimization.m` | MATLAB code for optimization using iterative method |
+| `fminconOPtimization.m` | MATLAB code for optimization using fmincon with constraints |
+| `fminconinitialvalueopt.m` | MATLAB code for optimization of initial conditions |
+| `optimalValuesofUforEachHour.m` | MATLAB code for hourly feed-rate optimization |
+| `ModellingFermentor.m` | MATLAB script for modeling the fed-batch bioreactor ODE system |
 
----
-
-## 📖 Skills Demonstrated
-
-- **Process Modeling:** Bioprocess mass balances with inhibition kinetics.
-- **Numerical Methods:** Solving ODEs with MATLAB (`ode45`).
-- **Optimization:** Nonlinear programming (`fmincon`) with constraints.
-- **Data Visualization:** Plotting reactor profiles and optimization results.
-- **Chemical Engineering Applications:** Reactor design and bioprocess optimization.
 
 ---
 
-## ✍️ Author
+## How to Run the MATLAB Codes
 
-**Chanchal Yadav**  
-B.Tech Chemical Engineering  
-*(Prepared as part of academic + placement portfolio)*
+1. Open MATLAB and navigate to the folder containing these files.  
+2. Run each file separately by typing its name (without `.m`) in the MATLAB Command Window.  
+3. Ensure that the Optimization Toolbox is installed for the `fmincon` codes.  
+4. View the output in MATLAB Command Window and plots generated automatically.  
+
+
+
+## Methodology
+
+### 1️⃣ Iterative Optimization ([IterativeOptimization.m](./IterativeOptimization.m))
+- Tests multiple constant feed rates `u ∈ [0, 1]`
+- Solves the system of ODEs for each `u`
+- Selects the `u` value that gives the maximum final product concentration `P(tf)`
+
+### 2️⃣ fmincon Optimization ([fminconOPtimization.m](./fminconOPtimization.m))
+- Uses MATLAB’s `fmincon` function to determine the optimal feed rate `u`
+- Applies nonlinear constraint \( X(t) \leq 3 \) to prevent oxygen depletion
+- Provides efficient and accurate optimization under physical limits
+
+### 3️⃣ Initial Condition Optimization ([fminconinitialvalueopt.m](./fminconinitialvalueopt.m))
+- Optimizes starting conditions (biomass `X₀`, substrate `S₀`, and volume `V₀`)
+- Enhances product yield even for fixed feed rates
+
+### 4️⃣ Hourly Feed Optimization ([optimalValuesofUforEachHour.m](./optimalValuesofUforEachHour.m))
+- Divides the total process duration into 8 hourly intervals
+- Determines optimal feed rates \( u₁, u₂, …, u₈ \) for each hour
+- Improves process performance and product yield
+
+### 5️⃣ Modeling the Reactor ([ModellingFermentor.m](./ModellingFermentor.m))
+- Defines and solves the system of ODEs representing the fed-batch bioreactor
+- Simulates biomass, substrate, and product concentration profiles
+- Reusable module for integration with optimization scripts
 
 ---
 
-## 📌 Note
+## Summary of Results
 
-This repository is intended for learning and demonstration purposes.  
-The models and parameters are simplified representations and not from industrial datasets.
+| Case | Optimization Type | X₀ (g/L) | S₀ (g/L) | V₀ (L) | u (L/h) | t (h) | P(tf) (g/L) |
+|:--|:--|:--|:--|:--|:--|:--|:--|
+| 1 | Fixed Feed Rate (Iterative) | 1 | 0 | 2 | 0.4284 | 8 | 6.6778 |
+| 2 | fmincon (With Constraint) | 1 | 0 | 2 | 0.3173 | 8 | 6.4633 |
+| 3 | Hourly Feed | 1 | 0 | 2 | {u₁...u₈} | 8 | 7.4124 |
+| 4 | Optimized Initial + Feed | 2 | 0 | 2.78 | 0.4569 | 8 | 8.0671 |
+| 5 | Hourly Feed + Initial Opt. | 1 | 0 | 2 | {u₁...u₈} | 8 | **8.7371** |
+
+### Key Insights
+- The **fmincon method** achieved stable and precise optimization under constraints.  
+- **Hourly control** of feed rate significantly improved the yield compared to constant feed.  
+- **Combined optimization** of initial conditions and feed rate produced the **highest product concentration (8.7371 g/L)**.  
+- Maintaining the **biomass constraint** \( X(t) \leq 3 \) was essential to prevent oxygen depletion and ensure reactor stability.
+
+---
+
+## Acknowledgements
+
+We sincerely thank **Prof. Nitin Padhiyar**,  
+Department of Chemical Engineering, IIT Gandhinagar,  
+for his valuable guidance, insights, and continuous support throughout this project.
+
+---
+
+## References
+
+1. P.F. Stanbury, A. Whitaker, and S.J. Hall, *Principles of Fermentation Technology*, Pergamon, 2017.  
+2. L. Bastiaens and J. F. Van Impe, *Bioreactor Dynamics and Control*, Springer, 2015.  
+3. [MathWorks fmincon Documentation](https://www.mathworks.com/help/optim/ug/fmincon.html)  
+4. F. Garcia-Ochoa et al., “Oxygen uptake rate in microbial processes: an overview,” *Biochemical Engineering Journal*, 49(3):289–307, 2010.
 
